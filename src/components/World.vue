@@ -17,8 +17,10 @@ export default {
 
 <style lang='scss'>
 .world {
-  width: 1000px;
-  height: 1000px;
+  width: 100%;
+  max-width: 800px;
+  height: 400px;
+  margin: 0 auto;
   background: cornflowerblue;
 }
 </style>

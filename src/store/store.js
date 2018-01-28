@@ -5,7 +5,7 @@ import moment from 'moment';
 import _ from 'lodash';
 
 // temp
-import noise from 'noise/100x100.json';
+import noise from 'noise/40.json';
 
 Vue.use(Vuex);
 
@@ -27,7 +27,7 @@ export const store = new Vuex.Store({
   },
   actions: {
     fetchData: ({ commit }) => {
-      commit('SET_DATA', { noise, sideLength: 100 });
+      commit('SET_DATA', { noise, sideLength: 40 });
       // Vue.axios.get(config.noiseURL).then((response) => {
       //   commit('SET_DATA', response.data);
       // });

@@ -3,10 +3,13 @@
 </template>
 
 <script>
+import chroma from 'chroma-js';
+const colorScale = chroma.scale(['lightBlue', 'beige', 'green']);;
 export default {
   computed: {
     color: function() {
-      return `rgb(${~~(this.value * 255)}, ${~~(this.value * 255)}, ${~~(this.value * 255)})`;
+      return colorScale(this.value).css();
+      // return `rgb(${~~(this.value * 255)}, ${~~(this.value * 255)}, ${~~(this.value * 255)})`;
     }
   },
   name: 'Tile',
