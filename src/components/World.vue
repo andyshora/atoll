@@ -1,17 +1,26 @@
 <template>
   <div class='world'>
-    <Island></Island>
+    <Island v-if='noiseLoaded'></Island>
   </div>
 </template>
 
 <script>
 import Island from 'components/Island';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
     Island
   },
-  name: 'world'
+  name: 'world',
+  computed: {
+    noiseLoaded: function() {
+      return !!this.sideLength
+    },
+    ...mapGetters([
+      'sideLength'
+    ])
+  }
 }
 </script>
 
@@ -21,6 +30,5 @@ export default {
   max-width: 800px;
   height: 400px;
   margin: 0 auto;
-  background: cornflowerblue;
 }
 </style>

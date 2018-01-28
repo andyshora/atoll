@@ -4,7 +4,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import Tile from 'components/Tile';
 import config from 'config';
 
 const { WIREFRAME_MODE } = config;
@@ -44,10 +43,41 @@ class Island extends THREE.Object3D {
   }
   _generateWater() {
     const waterGeom = new THREE.PlaneGeometry(10, 10, 1, 1);
-    const material = new THREE.MeshLambertMaterial({ color: 0x37a6b2, wireframe: WIREFRAME_MODE });
-    const waterMesh = new THREE.Mesh(waterGeom, material);
+    const beachMaterial = new THREE.MeshLambertMaterial({
+      color: 0xfff8bd,
+      wireframe: WIREFRAME_MODE,
+      transparent: true,
+      depthWrite: false,
+      opacity: 0.7
+    });
+    const shallowWaterMaterial = new THREE.MeshLambertMaterial({
+      color: 0x33949e,
+      wireframe: WIREFRAME_MODE,
+      transparent: true,
+      depthWrite: false,
+      opacity: 0.9
+    });
+    const deepWaterMaterial = new THREE.MeshLambertMaterial({
+      color: 0x000066,
+      wireframe: WIREFRAME_MODE
+    });
+    const beachMesh = new THREE.Mesh(waterGeom, beachMaterial);
+    beachMesh.position.z = this.height * 0.5;
+    this.add(beachMesh);
 
-    const sideMaterial = new THREE.MeshLambertMaterial({ color: 0x37a6b2, wireframe: WIREFRAME_MODE, side: THREE.DoubleSide });
+    const shallowWaterMesh = new THREE.Mesh(waterGeom, shallowWaterMaterial);
+    shallowWaterMesh.position.z = this.height * 0.44;
+    this.add(shallowWaterMesh);
+
+    const deepWaterMesh = new THREE.Mesh(waterGeom, deepWaterMaterial);
+    deepWaterMesh.position.z = this.height * 0.35;
+    this.add(deepWaterMesh);
+
+    const sideMaterial = new THREE.MeshLambertMaterial({
+      color: 0xffffff,
+      wireframe: WIREFRAME_MODE,
+      side: THREE.DoubleSide
+    });
 
     const sides = [];
     const sideGeom = new THREE.PlaneGeometry(10, 1, 1, 1);
@@ -74,17 +104,6 @@ class Island extends THREE.Object3D {
     sides[3].position.x = -5;
     sides[3].position.z = this.height * 0.25;
 
-    const verts = waterMesh.geometry.vertices;
-    const l = verts.length;
-
-    for (let i = 0; i < l; i++) {
-      const v = verts[i];
-      // need to update Z to go up in Y axis becasue of the rotation on this
-      v.z = 0.5 * this.height;
-    }
-
-    waterMesh.material.needsUpdate = true;
-    this.add(waterMesh);
     for (let i = 0; i < sides.length; i++) {
       this.add(sides[i]);
     }
@@ -96,9 +115,6 @@ class Island extends THREE.Object3D {
 
 export default {
   name: 'Island',
-  components: {
-    Tile
-  },
   computed: {
     ...mapGetters([
       'noise',
@@ -138,42 +154,13 @@ export default {
     renderer.setSize(WIDTH, HEIGHT);
     this.$el.appendChild(renderer.domElement);
 
-    const light = new THREE.HemisphereLight(0xffffff, 0x080820, 1);
+    const light = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
     scene.add(light);
-
-    // var lights = [];
-		// lights[ 0 ] = new THREE.PointLight( 0xffffff, 0.3, 0 );
-		// lights[ 1 ] = new THREE.PointLight( 0xffffff, 0.3, 0 );
-		// lights[ 2 ] = new THREE.PointLight( 0xffffff, 0.3, 0 );
-    //
-		// lights[ 0 ].position.set( 0, 20, 0 );
-		// lights[ 1 ].position.set( 10, 20, 10 );
-		// lights[ 2 ].position.set( - 10, - 20, - 10 );
-    //
-		// scene.add( lights[ 0 ] );
-		// scene.add( lights[ 1 ] );
-		// scene.add( lights[ 2 ] );
-
-    // var helper = new THREE.HemisphereLightHelper(light, 5);
-    // scene.add(helper);
 
     const sun = new THREE.DirectionalLight(0xffffff, 0.6);
     sun.position.set(0, 10, 10);
-    // sun.castShadow = true;
-
-    // const targetObject = new THREE.Object3D();
-    // targetObject.position.set(50, 0, 50);
-	  // scene.add(targetObject);
-    //
-	  // sun.target = targetObject;
 
     scene.add(sun);
-
-    // const helper = new THREE.DirectionalLightHelper(sun, 5);
-    // scene.add(helper);
-
-    // var shadowHelper = new THREE.CameraHelper(sun.shadow.camera);
-    // scene.add(shadowHelper);
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;

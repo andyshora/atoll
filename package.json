@@ -23,6 +23,7 @@
     "sass-loader": "^6.0.6",
     "vue": "^2.5.11",
     "vue-axios": "^2.0.2",
+    "vue-jsonp": "^0.1.7",
     "vue-loader": "^13.0.5",
     "vue-router": "^3.0.1",
     "vue-template-compiler": "^2.4.4",

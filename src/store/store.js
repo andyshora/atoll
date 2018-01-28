@@ -3,9 +3,10 @@ import Vuex from 'vuex';
 import config from 'config';
 import moment from 'moment';
 import _ from 'lodash';
+const { NOISE_LENGTH } = config;
 
 // temp
-import noise from 'noise/40.json';
+// import noise from 'noise/40.json';
 
 Vue.use(Vuex);
 
@@ -27,10 +28,13 @@ export const store = new Vuex.Store({
   },
   actions: {
     fetchData: ({ commit }) => {
-      commit('SET_DATA', { noise, sideLength: 40 });
-      // Vue.axios.get(config.noiseURL).then((response) => {
-      //   commit('SET_DATA', response.data);
-      // });
+      Vue.jsonp(`http://noise.shora.net/noise/${NOISE_LENGTH}/${NOISE_LENGTH}`, {
+        callbackQuery: 'jsonp'
+      }).then(noise => {
+        commit('SET_DATA', { noise, sideLength: NOISE_LENGTH });
+      }).catch(err => {
+        console.error(err.message);
+      });
     }
   }
 });
